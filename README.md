@@ -26,3 +26,29 @@ go mod vendor
 
 go get -u github.com/gin-gonic/gin
 ```
+
+#### 关于 .mod 文件
+module 表示模块名称
+require 依赖包列表以及版本，是不需要自己手动去修改的，当运行代码的时候，会根据代码中用到的包自动去下载导入。
+exclude 禁止依赖包列表，不下载和引用哪些包(仅在当前模块为主模块时生效)
+replace 替换依赖包列表和引用路径(仅在当前模块为主模块时生
+replace 他可以将代码中使用，但国内被墙的代码替换成 github上的下载路径，例如：golang.org/x/ 下的包，全都替换成 github地址上的包，版本使用 latest 即可。
+replace 指令可以将依赖的模块替换为另一个模块，例如由公共库替换为内部私有仓
+
+replace golang.org/x/net v1.2.3 => example.com/fork/net v1.4
+replace (
+	golang.org/x/net => github.com/golang/net latest
+	golang.org/x/tools => github.com/golang/tools latest
+	golang.org/x/crypto => github.com/golang/crypto latest
+	golang.org/x/sys => github.com/golang/sys latest
+	golang.org/x/text => github.com/golang/text latest
+	golang.org/x/sync => github.com/golang/sync latest
+)
+
+indirect 表示这个库是间接引用进来的。
+使用 go list -m all 可以查看到所有依赖列表，也可以使用 go list -json -m all 输出 json格式的打印结果。
+
+除了 go.mod 之外，go 命令行工具还维护了一个 go.sum 文件，它包含了指定的模块的版本内容的哈希值作为校验参考：
+go 命令行工具使用 go.sum 文件来确保你的项目依赖的模块不会发生变化——无论是恶意的，还是意外的，或者是其它的什么原因。go.mod 文件和 go.sum 文件都应该保存到你的代码版本控制系统里面去。
+
+go.sum 这个文件记录了源码的直接依赖和间接依赖包的相关版本的 hash 值，用来校验本地包的真实性。在构建的时候，如果本地依赖包的 hash 值与 go.sum 文件中记录的不一致，就会被拒绝构建，这样可以确保你的项目所依赖的 module 内容，不会被恶意或意外篡改。
