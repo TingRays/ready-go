@@ -24,6 +24,9 @@ go mod tidy
 go mod download
 go mod vendor
 
+#获取远程包
+go get github.com/astaxie/beedb
+# -u 参数可以自动更新包，而且当go get的时候会自动获取该包依赖的其他第三方包
 go get -u github.com/gin-gonic/gin
 ```
 
